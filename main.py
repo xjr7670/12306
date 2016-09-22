@@ -34,14 +34,13 @@ class check_check(object):
             stations = fobj.read()
 
         if from_station in stations and to_station in stations:
-            sql1 = 'select cname from station1 where cn_name="%s"' % from_station
-            sql2 = 'select cname from station1 where cn_name="%s"' % to_station
-            cur.execute(sql1)
-            rs1 = cur.fetchone()
-            cur.execute(sql2)
-            rs2 = cur.fetchone()
-            print(type(rs1))
-            return (date, rs1[0], rs2[0])
+            sql = 'SELECT cname FROM station1 WHERE cn_name="%s" UNION SELECT cname FROM station1 WHERE cn_name="%s"' % (from_station, to_station)
+            cur.execute(sql)
+            rs = cur.fetchall()
+            s = []
+            for i in rs:
+                s.append(i[0])    
+            return (date, s[0], s[1])
 
     def check_rest_fee(self, date, from_station, to_station):
         '''输入日期、出发站及到站，查询余票信息'''
